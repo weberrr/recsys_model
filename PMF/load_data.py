@@ -36,5 +36,8 @@ def split_rating_dat(data, size=0.2):
     return np.array(train_data), np.array(test_data)
 
 if __name__ == "__main__":
-    file_path = "PMF\data\ml-1m\\ratings.dat"
-    load_rating_data(file_path)
+    file_path = r"PMF\data\ml-1m\ratings.dat"
+    data = load_rating_data(file_path)
+    print(data[:100])
+    print(type(data[0][0]))
+    print(type(data[0][2]))

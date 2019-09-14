@@ -3,7 +3,7 @@ from pmf import PMF
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    file_path = "PMF\data\ml-1m\\ratings.dat"
+    file_path = r"PMF\data\ml-1m\ratings.dat"
     pmf = PMF()
     pmf.set_params({"num_feature": 10, "max_epoch": 50, "num_batch": 50,
                     "batch_size": 1000, "epsilon": 0.01, "_lambda": 0.1})
