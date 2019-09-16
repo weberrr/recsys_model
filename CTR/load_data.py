@@ -47,3 +47,19 @@ def split_rating_dat(data, size=0.2):
         else:
             train_data.append(line)
     return np.array(train_data), np.array(test_data)
+
+
+def get_users_items(train_set, test_set):
+    num_user = int(
+        max(np.amax(train_set[:, 0]), np.amax(test_set[:, 0])))+1  # user总数
+    num_item = int(
+        max(np.amax(train_set[:, 1]), np.amax(test_set[:, 1])))+1  # item总数
+    users = [[] for _ in range(num_user)]
+    items = [[] for _ in range(num_item)]
+    for i in np.concatenate((train_set,test_set),axis=0):
+        if int(i[2]) == 1:
+            if int(i[1]) not in users[int(i[0])]:
+                users[int(i[0])].append(int(i[1]))
+            if int(i[0]) not in items[int(i[1])]:
+                items[int(i[1])].append(int(i[0]))
+    return users, items

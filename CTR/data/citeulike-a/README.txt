@@ -4,7 +4,7 @@ It is partly from [Wang and Blei]. Note that the original dataset in [Wang and B
 
 The text information (item content) of citeulike-a is preprocessed by following the same procedure as that in [Wang and Blei].
 
-Some statistics are listed as follows£º
+Some statistics are listed as followsï¿½ï¿½
 
 #users 					5551 
 #items 					16980 
@@ -20,6 +20,7 @@ raw-data.csv	raw data
 tags.dat		tags, sorted by tag-id's
 users.dat		rating matrix (user-item matrix)
 vocabulary.dat	corresponding words for file mult.dat
+papers.dat   each line means a paper's id , paper's word id , word appeared time
 
 BibTex
 @inproceedings{DBLP:conf/ijcai/WangCL13,
