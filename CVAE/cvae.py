@@ -79,7 +79,11 @@ class CVAE():
                                self.V[ui_items, :])*(self.a-self.b)
                     fs_part += self.lambda_u*np.eye(self.num_features)
                     sec_part = np.sum(self.V[ui_items, :], axis=0)*self.a
-                    self.U[i, :] = scipy.linalg.solve(fs_part, sec_part)
+                    try:
+                        self.U[i, :] = scipy.linalg.solve(fs_part, sec_part)
+                    except AttributeError:
+                        # if module 'scipy' has no attribute 'linalg'
+                        self.U[i, :] = np.dot(np.mat(fs_part).I, sec_part)
             # update V
             users_ids = np.array([len(x) for x in train_users]) > 0
             u = self.U[users_ids]
@@ -96,33 +100,39 @@ class CVAE():
                 else:
                     fs_part = uTu + self.lambda_v*np.eye(self.num_features)
                     sec_part = self.lambda_v * self.V_theta[j, :]
-                self.V[j, :] = scipy.linalg.solve(fs_part, sec_part)
-            recall_50 = self.evalute_recall(train_users, test_users, 50)
-            recall_100 = self.evalute_recall(train_users, test_users, 100)
-            print("M_Step：Iter:{}, Recall@50:{:.5f}, Recall@100:{:.5f}"
-                  .format(it, recall_50, recall_100))
-        return recall_50
+                try:
+                    self.V[j, :] = scipy.linalg.solve(fs_part, sec_part)
+                except AttributeError:
+                    # if module 'scipy' has no attribute 'linalg'
+                    self.V[j, :] = np.dot(np.mat(fs_part).I, sec_part)
+            recall = self.evalute_recall(train_users, test_users, [50,100,150])
+            print("M_Step：Iter:{}, Recall@50:{:.5f}, Recall@100:{:.5f},Recall@150:{:.5f}"
+                  .format(it, recall[0], recall[1], recall[2]))
+        return recall[0]
 
     def reg_tensor(self, ts):
         return torch.max(torch.sigmoid(ts), torch.tensor(1e-10, dtype=torch.float))
 
-    def evalute_recall(self, train_users, test_users, M):
+    def evalute_recall(self, train_users, test_users, recall_M):
+        res = []
         score = np.dot(self.U, self.V.T)
         ind_rec = np.argsort(score, axis=1)[:, ::-1]
-        recalls = []
-        for i in range(self.num_users):
-            if len(test_users[i]) > 0:
-                m_rec = []
-                recall = 0.
-                for j in ind_rec[i]:
-                    if j not in train_users[i]:
-                        m_rec.append(j)
-                        if j in test_users[i]:
-                            recall += 1.
-                    if len(m_rec) == M:
-                        break
-                recalls.append(recall/len(test_users[i]))
-        return np.mean(recalls)
+        for m in recall_M:
+            recalls = []
+            for i in range(self.num_users):
+                if len(test_users[i]) > 0:
+                    m_rec = []
+                    recall = 0.
+                    for j in ind_rec[i]:
+                        if j not in train_users[i]:
+                            m_rec.append(j)
+                            if j in test_users[i]:
+                                recall += 1.
+                        if len(m_rec) == m:
+                            break
+                    recalls.append(recall/len(test_users[i]))
+            res.append(np.mean(recalls))
+        return res
 
     def save_model(self, file_path):
         pass
