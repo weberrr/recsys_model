@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 
 def load_data(file_path):
@@ -9,8 +8,9 @@ def load_data(file_path):
             l = []
             line = p.strip().split()
             if int(line[0]) != 0:
-                 l = [int(x) for x in line[1:]]
-            data.append(np.array(l,dtype=np.int32))
+                for x in line[1:]:
+                    l.append(int(x))
+            data.append(np.array(l, dtype=np.int32))
     return np.array(data)
 
 
@@ -30,19 +30,19 @@ def split_rating_dat(data, size):
     num_user = 5551
     train_data = [[] for _ in range(num_user)]
     test_data = [[] for _ in range(num_user)]
-    t=0
+    t = 0
     for line in data:
         num = line.strip().split(" ")
         temp = 0
         for n in num:
             if temp < size:
-                train_data[i].append(n)
+                train_data[t].append(n)
             else:
-                test_data[i].append(n)
-            temp +=1
-        t+=1
+                test_data[t].append(n)
+            temp += 1
+        t += 1
     train_item = [[] for _ in range(num_user)]
-    for n, i in enumerate(train):
+    for n, i in enumerate(train_data):
         for k in i:
             train_item[k].append(n)
-    return np.array(train_data), np.array(test_data),np.array(train_item)
+    return np.array(train_data), np.array(test_data), np.array(train_item)

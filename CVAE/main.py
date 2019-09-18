@@ -1,7 +1,7 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 from load_data import load_data,load_content_data,split_rating_dat
-from cvae import *
+from cvae import CVAE
 
 if __name__ == "__main__":
     data_dir = "CVAE\\data\\citeulike-a\\"

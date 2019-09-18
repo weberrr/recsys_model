@@ -1,7 +1,8 @@
+ # pylint: disable=no-member
+ # pylint: disable=not-callable
 import torch
 from torch import nn,optim
 
-# VAE need to 
 
 class VAE(nn.Module):
     def __init__(self, dims, latent_dim):
