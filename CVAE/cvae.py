@@ -40,7 +40,6 @@ class CVAE():
         side_input = self.initialize(train_users, train_items, item_side_info)
         for epoch in range(self.max_epoch):
             loss, side_latent = self.e_step(side_input)
-            self.V[:] = side_latent.clone().detach().numpy()
             recall = self.m_step(train_users, train_items, test_users)
             print("Epoch:{}, Loss:{}, Recall:{}".format(epoch, loss, recall))
 
